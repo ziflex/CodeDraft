@@ -54,7 +54,7 @@ namespace CodeDraft.Editor.Components.Tabs
         {
             this._notebook.SwitchPage += (o, args) =>
             {
-                if (args.PageNum == (this._notebook.NPages - 1))
+				if (args.PageNum == (this._notebook.NPages - 1))
                 {
                     this.AddTab(new Draft("New draft"));
                 }
@@ -100,14 +100,29 @@ namespace CodeDraft.Editor.Components.Tabs
 
         public void RemoveTab(int index)
         {
+			var nextNPages = this._notebook.NPages - 1;
+
+			if (nextNPages > -1) {
+				var previousTabIndex = index - 1;
+
+				if (previousTabIndex == -1) {
+					previousTabIndex = 0;
+				}
+
+				this.Focus (previousTabIndex);
+			}
+
             this._notebook.RemovePage(index);
-
-            if (this._notebook.NPages == 1)
-            {
-                this.AddTab(new Draft("New draft"));
-            }
-
             this._notebook.ShowAll();
         }
+
+		public void Focus(int index) {
+			if (this._notebook.NPages == 1) {
+				this.AddTab(new Draft("New draft"));
+				return;
+			} 
+				
+			this._notebook.CurrentPage = index;
+		}
     }
 }
